@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Filter, X } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { Button } from './ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
 import { Checkbox } from './ui/checkbox'
@@ -43,11 +43,11 @@ export function ProductFilters({ filters, onFiltersChange, onClearFilters }: Pro
   }
 
   const getActiveFiltersCount = () => {
-    return filters.categories.length + 
-           filters.brands.length + 
-           filters.sizes.length + 
-           filters.availability.length +
-           (filters.priceRange[0] > 0 || filters.priceRange[1] < 500 ? 1 : 0)
+    return filters.categories.length +
+      filters.brands.length +
+      filters.sizes.length +
+      filters.availability.length +
+      (filters.priceRange[0] > 0 || filters.priceRange[1] < 500 ? 1 : 0)
   }
 
   const activeCount = getActiveFiltersCount()
@@ -65,9 +65,16 @@ export function ProductFilters({ filters, onFiltersChange, onClearFilters }: Pro
           )}
         </Button>
       </SheetTrigger>
-      
-      <SheetContent side="left" className="w-80 overflow-y-auto">
-        <SheetHeader>
+
+      <SheetContent
+        side="left"
+        className="w-80 overflow-y-auto !gap-0 p-0 bg-white dark:bg-gray-900 text-black dark:text-white border-r-0"
+        style={{
+          backgroundColor: 'white',
+          borderRight: 'none'
+        }}
+      >
+        <SheetHeader className="px-6 py-4">
           <SheetTitle className="flex items-center justify-between">
             Filters
             {activeCount > 0 && (
@@ -78,7 +85,7 @@ export function ProductFilters({ filters, onFiltersChange, onClearFilters }: Pro
           </SheetTitle>
         </SheetHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 px-6 py-4">
           {/* Categories */}
           <div className="space-y-3">
             <h3 className="font-medium">Categories</h3>
@@ -175,7 +182,7 @@ export function ProductFilters({ filters, onFiltersChange, onClearFilters }: Pro
           </div>
         </div>
 
-        <div className="pt-4 border-t">
+        <div className="px-6 py-4 border-t bg-white dark:bg-gray-900">
           <Button className="w-full" onClick={() => setIsOpen(false)}>
             Apply Filters
           </Button>

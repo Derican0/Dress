@@ -25,28 +25,34 @@ interface ShoppingCartProps {
   onCheckout: () => void
 }
 
-export function ShoppingCart({ 
-  isOpen, 
-  onClose, 
-  items, 
-  onUpdateQuantity, 
-  onRemoveItem, 
-  onCheckout 
+export function ShoppingCart({
+  isOpen,
+  onClose,
+  items,
+  onUpdateQuantity,
+  onRemoveItem,
+  onCheckout
 }: ShoppingCartProps) {
   const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg">
-        <SheetHeader>
+      <SheetContent
+        className="w-full sm:max-w-lg !gap-0 p-0 bg-white dark:bg-gray-900 text-black dark:text-white"
+        style={{
+          backgroundColor: 'white',
+          borderLeft: 'none'
+        }}
+      >
+        <SheetHeader className="px-6 py-4">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5" />
             Cart ({itemCount})
           </SheetTitle>
         </SheetHeader>
 
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full px-6">
           {items.length === 0 ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
@@ -67,7 +73,7 @@ export function ShoppingCart({
                       alt={item.product.name}
                       className="w-16 h-16 object-cover rounded"
                     />
-                    
+
                     <div className="flex-1 space-y-2">
                       <div>
                         <h4 className="font-medium text-sm line-clamp-2">{item.product.name}</h4>
@@ -79,7 +85,7 @@ export function ShoppingCart({
                           <span className="text-xs text-muted-foreground">Size: {item.size}</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Button
@@ -100,7 +106,7 @@ export function ShoppingCart({
                             <Plus className="w-3 h-3" />
                           </Button>
                         </div>
-                        
+
                         <div className="text-right">
                           <p className="font-medium text-sm">${(item.price * item.quantity).toFixed(2)}</p>
                           <Button
@@ -119,7 +125,7 @@ export function ShoppingCart({
               </div>
 
               {/* Cart Summary */}
-              <div className="border-t pt-4 space-y-4">
+              <div className="border-t pt-4 space-y-4 px-6 pb-6 bg-white dark:bg-gray-900">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
@@ -135,11 +141,11 @@ export function ShoppingCart({
                     <span>${(total + (total > 100 ? 0 : 9.99)).toFixed(2)}</span>
                   </div>
                 </div>
-                
+
                 <Button className="w-full" onClick={onCheckout}>
                   Checkout
                 </Button>
-                
+
                 <Button variant="outline" className="w-full" onClick={onClose}>
                   Continue Shopping
                 </Button>

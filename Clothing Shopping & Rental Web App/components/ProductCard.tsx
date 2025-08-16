@@ -24,7 +24,7 @@ export interface Product {
 interface ProductCardProps {
   product: Product
   onProductClick: (product: Product) => void
-  onAddToCart: (product: Product, type: 'buy' | 'rent', size?: string, rentalPeriod?: string) => void
+  onAddToCart: (product: Product, type: 'buy' | 'rent', size: string, rentalPeriod?: string) => void
   onToggleWishlist?: (productId: string) => void
   isInWishlist?: boolean
 }

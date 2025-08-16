@@ -41,11 +41,18 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 text-black dark:text-white border-0"
+        style={{
+          backgroundColor: 'white',
+          border: 'none',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="sr-only">{product.name}</DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid md:grid-cols-2 gap-6">
           {/* Product Image */}
           <div className="space-y-4">
@@ -90,7 +97,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                     <p className="text-sm text-muted-foreground">Own it forever</p>
                   </Label>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 p-3 border rounded-lg">
                   <RadioGroupItem value="rent" id="rent" />
                   <Label htmlFor="rent" className="flex-1">
@@ -140,8 +147,8 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
             </div>
 
             {/* Add to Cart Button */}
-            <Button 
-              className="w-full" 
+            <Button
+              className="w-full"
               onClick={handleAddToCart}
               disabled={!selectedSize}
             >
