@@ -8,7 +8,7 @@ import { AuthModal } from './components/AuthModal'
 import { Button } from './components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select'
 import { auth, api } from './utils/supabase/client'
-import { toast, Toaster } from 'sonner@2.0.3'
+import { toast, Toaster } from 'sonner'
 
 // Mock product data
 const mockProducts: Product[] = [
@@ -119,7 +119,7 @@ export default function App() {
     initializeApp()
 
     // Listen for auth changes
-    const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user || null)
       if (session?.user) {
         await loadUserProfile()
@@ -137,7 +137,9 @@ export default function App() {
       setProducts(products)
     } catch (error) {
       console.error('Failed to load products:', error)
-      toast.error('Failed to load products')
+      // Fallback to mock data if API fails
+      setProducts(mockProducts)
+      toast.error('Using demo data - API connection failed')
     }
   }
 
@@ -155,20 +157,20 @@ export default function App() {
     let filtered = products.filter(product => {
       // Search filter
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           product.brand.toLowerCase().includes(searchQuery.toLowerCase())
-      
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+
       // Category filter
-      const matchesCategory = filters.categories.length === 0 || 
-                             filters.categories.includes(product.category)
-      
+      const matchesCategory = filters.categories.length === 0 ||
+        filters.categories.includes(product.category)
+
       // Brand filter
-      const matchesBrand = filters.brands.length === 0 || 
-                          filters.brands.includes(product.brand)
-      
+      const matchesBrand = filters.brands.length === 0 ||
+        filters.brands.includes(product.brand)
+
       // Price filter
-      const matchesPrice = product.buyPrice >= filters.priceRange[0] && 
-                          product.buyPrice <= filters.priceRange[1]
-      
+      const matchesPrice = product.buyPrice >= filters.priceRange[0] &&
+        product.buyPrice <= filters.priceRange[1]
+
       return matchesSearch && matchesCategory && matchesBrand && matchesPrice
     })
 
@@ -187,9 +189,9 @@ export default function App() {
   }, [products, searchQuery, filters, sortBy])
 
   const addToCart = (product: Product, type: 'buy' | 'rent', size: string, rentalPeriod?: string) => {
-    const price = type === 'buy' ? product.buyPrice : 
-                  rentalPeriod ? getRentalPrice(product.rentPrice, parseInt(rentalPeriod)) : 
-                  product.rentPrice
+    const price = type === 'buy' ? product.buyPrice :
+      rentalPeriod ? getRentalPrice(product.rentPrice, parseInt(rentalPeriod)) :
+        product.rentPrice
 
     const newItem: CartItem = {
       id: `${product.id}-${type}-${size}-${rentalPeriod || ''}`,
@@ -225,7 +227,7 @@ export default function App() {
     if (quantity === 0) {
       setCartItems(prev => prev.filter(item => item.id !== id))
     } else {
-      setCartItems(prev => prev.map(item => 
+      setCartItems(prev => prev.map(item =>
         item.id === id ? { ...item, quantity } : item
       ))
     }
@@ -235,7 +237,7 @@ export default function App() {
     setCartItems(prev => prev.filter(item => item.id !== id))
   }
 
-  const handleAuth = (type: 'login' | 'signup', user: any) => {
+  const handleAuth = (type: 'login' | 'signup', _user: any) => {
     toast.success(`${type === 'login' ? 'Logged in' : 'Account created'} successfully!`)
   }
 
@@ -260,8 +262,8 @@ export default function App() {
     try {
       const orderData = {
         items: cartItems,
-        total: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 
-               (cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 100 ? 0 : 9.99),
+        total: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) +
+          (cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 100 ? 0 : 9.99),
         shippingAddress: {
           // This would normally come from a checkout form
           street: '123 Main St',
@@ -271,11 +273,11 @@ export default function App() {
         }
       }
 
-      const { order } = await api.createOrder(orderData)
+      await api.createOrder(orderData)
       toast.success('Order placed successfully!')
       setCartItems([])
       setIsCartOpen(false)
-      
+
       // Reload products to update availability
       await loadProducts()
     } catch (error) {
@@ -293,7 +295,7 @@ export default function App() {
 
     try {
       const isInWishlist = userProfile?.wishlist?.includes(productId)
-      
+
       if (isInWishlist) {
         await api.removeFromWishlist(productId)
         toast.success('Removed from wishlist')
@@ -301,7 +303,7 @@ export default function App() {
         await api.addToWishlist(productId)
         toast.success('Added to wishlist')
       }
-      
+
       // Reload user profile
       await loadUserProfile()
     } catch (error) {
@@ -364,9 +366,9 @@ export default function App() {
             onFiltersChange={setFilters}
             onClearFilters={clearFilters}
           />
-          
+
           <div className="flex-1" />
-          
+
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Sort by" />

@@ -24,7 +24,7 @@ export interface Product {
 interface ProductCardProps {
   product: Product
   onProductClick: (product: Product) => void
-  onAddToCart: (product: Product, type: 'buy' | 'rent') => void
+  onAddToCart: (product: Product, type: 'buy' | 'rent', size?: string, rentalPeriod?: string) => void
   onToggleWishlist?: (productId: string) => void
   isInWishlist?: boolean
 }
@@ -48,7 +48,7 @@ export function ProductCard({ product, onProductClick, onAddToCart, onToggleWish
           alt={product.name}
           className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        
+
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {product.isNew && <Badge className="bg-green-500">New</Badge>}
@@ -63,9 +63,8 @@ export function ProductCard({ product, onProductClick, onAddToCart, onToggleWish
           <Button
             size="icon"
             variant="ghost"
-            className={`absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity ${
-              isInWishlist ? 'bg-red-50 hover:bg-red-100' : 'bg-white/80 hover:bg-white'
-            }`}
+            className={`absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity ${isInWishlist ? 'bg-red-50 hover:bg-red-100' : 'bg-white/80 hover:bg-white'
+              }`}
             onClick={(e) => {
               e.stopPropagation()
               onToggleWishlist(product.id)
@@ -99,25 +98,25 @@ export function ProductCard({ product, onProductClick, onAddToCart, onToggleWish
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               className="flex-1"
               onClick={(e) => {
                 e.stopPropagation()
-                onAddToCart(product, 'buy')
+                onAddToCart(product, 'buy', product.sizes[0])
               }}
               disabled={!hasAvailability('buy')}
             >
               <Plus className="w-4 h-4 mr-1" />
               Buy
             </Button>
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               className="flex-1"
               onClick={(e) => {
                 e.stopPropagation()
-                onAddToCart(product, 'rent')
+                onAddToCart(product, 'rent', product.sizes[0])
               }}
               disabled={!hasAvailability('rent')}
             >
